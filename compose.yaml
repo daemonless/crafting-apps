@@ -1,0 +1,281 @@
+#
+# Crafting Apps for FreeBSD (Daemonless)
+#
+# ArtCraft's seven open-source creative apps, each a static WebAssembly site
+# served by nginx. Pick the ones you want; nothing is shared between them.
+#
+# Usage:
+#   1. Copy example.env to .env and edit
+#   2. Run: podman-compose up -d
+#
+
+name: crafting-apps
+
+x-daemonless:
+  title: Crafting Apps
+  icon: ':material-palette:'
+  category: Photos & Media
+  description: ArtCraft's seven open-source, clean-room Adobe alternatives (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft) as WebAssembly web apps. Pick the ones you want.
+  upstream_url: https://github.com/storytold
+  web_url: https://getartcraft.com/apps
+  type: stack
+  community: "Discord:https://discord.gg/Kb9tkhecZT"
+
+  # Every app is something people open in a browser, so all of them go where
+  # the stack is put. Nothing talks to anything else.
+  networking:
+    "*": default
+
+  appjail:
+    director:
+      options:
+        - virtualnet: ':<random> default'
+        - nat:
+      services:
+        photocraft:
+          name: photocraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8080:80 proto:tcp'
+            - from: ghcr.io/daemonless/photocraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        vectorcraft:
+          name: vectorcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8081:80 proto:tcp'
+            - from: ghcr.io/daemonless/vectorcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        filmcraft:
+          name: filmcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8082:80 proto:tcp'
+            - from: ghcr.io/daemonless/filmcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        lightcraft:
+          name: lightcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8083:80 proto:tcp'
+            - from: ghcr.io/daemonless/lightcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        pdfcraft:
+          name: pdfcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8084:80 proto:tcp'
+            - from: ghcr.io/daemonless/pdfcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        effectcraft:
+          name: effectcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8085:80 proto:tcp'
+            - from: ghcr.io/daemonless/effectcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        designcraft:
+          name: designcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8086:80 proto:tcp'
+            - from: ghcr.io/daemonless/designcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+
+  # Each app is its own choice. The default is the compose as it stands: all
+  # seven. Leaving one out drops its service; nothing else changes.
+  choices:
+    photocraft:
+      label: PhotoCraft
+      doc: Image editing with layers, masks, adjustment layers and PSD files (Photoshop).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [photocraft] }
+    vectorcraft:
+      label: VectorCraft
+      doc: Vector illustration (Illustrator).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [vectorcraft] }
+    filmcraft:
+      label: FilmCraft
+      doc: Video editing (Premiere Pro).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [filmcraft] }
+    lightcraft:
+      label: LightCraft
+      doc: Photo library and raw developer (Lightroom).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [lightcraft] }
+    pdfcraft:
+      label: PdfCraft
+      doc: Read, organize, combine, split and secure PDFs (Acrobat).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [pdfcraft] }
+    effectcraft:
+      label: EffectCraft
+      doc: Motion graphics and visual effects (After Effects).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [effectcraft] }
+    designcraft:
+      label: DesignCraft
+      doc: Page layout and publishing (InDesign).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [designcraft] }
+
+  docs:
+    services:
+      photocraft: "Image editor (Photoshop)"
+      vectorcraft: "Vector illustration (Illustrator)"
+      filmcraft: "Video editor (Premiere Pro)"
+      lightcraft: "Photo library and raw developer (Lightroom)"
+      pdfcraft: "PDF workbench (Acrobat)"
+      effectcraft: "Motion graphics and effects (After Effects)"
+      designcraft: "Page layout (InDesign)"
+    env:
+      PUID: "User ID for the nginx worker processes"
+      PGID: "Group ID for the nginx worker processes"
+      TZ: "Timezone for the containers"
+    ports:
+      8080: PhotoCraft
+      8081: VectorCraft
+      8082: FilmCraft
+      8083: LightCraft
+      8084: PdfCraft
+      8085: EffectCraft
+      8086: DesignCraft
+
+  readme:
+    setup: |-
+      **Everything runs in the browser.** Each app is Rust compiled to WebAssembly; the containers only serve static files. Files open through the browser's file picker and save as downloads, and nothing is stored server side, so there are no volumes.
+
+      **Your work lives in the browser, not on the server.** Preferences, LightCraft's photo library (in the browser's origin-private file system) and EffectCraft's offline cache belong to the browser profile that opened the app, per origin. Clearing site data, switching browsers, or reaching the app under a different hostname means starting empty. Export what you want to keep; the exported files are the backup, as with any desktop app.
+
+      **HTTPS.** WebGPU and the clipboard need a secure context. Over plain HTTP the apps fall back to WebGL2; put them behind your reverse proxy for the full experience.
+
+      **Fonts.** The browser build ships with only two fonts. PhotoCraft also lists the Japanese, Chinese and Arabic families from [craft-fonts](https://github.com/storytold/craft-fonts), which the photocraft image serves alongside the app; a family is downloaded the first time you pick it or open a document that uses it.
+
+services:
+  photocraft:
+    container_name: photocraft
+    image: ghcr.io/daemonless/photocraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8080:80"
+    restart: always
+
+  vectorcraft:
+    container_name: vectorcraft
+    image: ghcr.io/daemonless/vectorcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8081:80"
+    restart: always
+
+  filmcraft:
+    container_name: filmcraft
+    image: ghcr.io/daemonless/filmcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8082:80"
+    restart: always
+
+  lightcraft:
+    container_name: lightcraft
+    image: ghcr.io/daemonless/lightcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8083:80"
+    restart: always
+
+  pdfcraft:
+    container_name: pdfcraft
+    image: ghcr.io/daemonless/pdfcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8084:80"
+    restart: always
+
+  effectcraft:
+    container_name: effectcraft
+    image: ghcr.io/daemonless/effectcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8085:80"
+    restart: always
+
+  designcraft:
+    container_name: designcraft
+    image: ghcr.io/daemonless/designcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8086:80"
+    restart: always

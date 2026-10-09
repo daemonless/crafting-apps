@@ -1,0 +1,25 @@
+# Compose for cit testing: all seven apps, defaults only
+name: crafting-apps-test
+
+services:
+  photocraft:
+    image: ghcr.io/daemonless/photocraft:latest
+    ports: ["8080:80"]
+  vectorcraft:
+    image: ghcr.io/daemonless/vectorcraft:latest
+    ports: ["8081:80"]
+  filmcraft:
+    image: ghcr.io/daemonless/filmcraft:latest
+    ports: ["8082:80"]
+  lightcraft:
+    image: ghcr.io/daemonless/lightcraft:latest
+    ports: ["8083:80"]
+  pdfcraft:
+    image: ghcr.io/daemonless/pdfcraft:latest
+    ports: ["8084:80"]
+  effectcraft:
+    image: ghcr.io/daemonless/effectcraft:latest
+    ports: ["8085:80"]
+  designcraft:
+    image: ghcr.io/daemonless/designcraft:latest
+    ports: ["8086:80"]

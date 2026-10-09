@@ -1,0 +1,15 @@
+title: Crafting Apps
+category: Photos & Media
+description: ArtCraft's seven open-source creative apps as WebAssembly web apps.
+icon: ':material-palette:'
+type: stack
+build:
+  # Every app image is published for both
+  architectures:
+    - amd64
+    - aarch64
+cit:
+  mode: screenshot
+  compose: true
+  port: 8080
+  health: /
