@@ -1,7 +1,7 @@
 #
 # Crafting Apps for FreeBSD (Daemonless)
 #
-# ArtCraft's seven open-source creative apps, each a static WebAssembly site
+# ArtCraft's ten open-source creative and office apps, each a static WebAssembly site
 # served by nginx. Pick the ones you want; nothing is shared between them.
 #
 # Usage:
@@ -15,7 +15,7 @@ x-daemonless:
   title: Crafting Apps
   icon: ':material-palette:'
   category: Photos & Media
-  description: ArtCraft's seven open-source, clean-room Adobe alternatives (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft) as WebAssembly web apps. Pick the ones you want.
+  description: ArtCraft's ten open-source, clean-room creative and office apps (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft, WordCraft, GridCraft, DeckCraft) as WebAssembly web apps. Pick the ones you want.
   upstream_url: https://github.com/storytold
   web_url: https://getartcraft.com/apps
   type: stack
@@ -116,9 +116,45 @@ x-daemonless:
               - PUID: "!ENV '${PUID}'"
               - PGID: "!ENV '${PGID}'"
               - TZ: "!ENV '${TZ}'"
+        wordcraft:
+          name: wordcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8087:80 proto:tcp'
+            - from: ghcr.io/daemonless/wordcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        gridcraft:
+          name: gridcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8088:80 proto:tcp'
+            - from: ghcr.io/daemonless/gridcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
+        deckcraft:
+          name: deckcraft
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8089:80 proto:tcp'
+            - from: ghcr.io/daemonless/deckcraft:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
 
   # Each app is its own choice. The default is the compose as it stands: all
-  # seven. Leaving one out drops its service; nothing else changes.
+  # ten. Leaving one out drops its service; nothing else changes.
   choices:
     photocraft:
       label: PhotoCraft
@@ -169,6 +205,27 @@ x-daemonless:
       options:
         "on": { label: "Included" }
         "off": { label: "Left out", drop: [designcraft] }
+    wordcraft:
+      label: WordCraft
+      doc: Document editor (Word).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [wordcraft] }
+    gridcraft:
+      label: GridCraft
+      doc: Spreadsheet (Excel).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [gridcraft] }
+    deckcraft:
+      label: DeckCraft
+      doc: Presentation editor (PowerPoint).
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [deckcraft] }
 
   docs:
     services:
@@ -179,6 +236,9 @@ x-daemonless:
       pdfcraft: "PDF workbench (Acrobat)"
       effectcraft: "Motion graphics and effects (After Effects)"
       designcraft: "Page layout (InDesign)"
+      wordcraft: "Document editor (Word)"
+      gridcraft: "Spreadsheet (Excel)"
+      deckcraft: "Presentation editor (PowerPoint)"
     env:
       PUID: "User ID for the nginx worker processes"
       PGID: "Group ID for the nginx worker processes"
@@ -191,6 +251,9 @@ x-daemonless:
       8084: PdfCraft
       8085: EffectCraft
       8086: DesignCraft
+      8087: WordCraft
+      8088: GridCraft
+      8089: DeckCraft
 
   readme:
     setup: |-
@@ -278,4 +341,37 @@ services:
       TZ: ${TZ:-UTC}
     ports:
       - "8086:80"
+    restart: always
+
+  wordcraft:
+    container_name: wordcraft
+    image: ghcr.io/daemonless/wordcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8087:80"
+    restart: always
+
+  gridcraft:
+    container_name: gridcraft
+    image: ghcr.io/daemonless/gridcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8088:80"
+    restart: always
+
+  deckcraft:
+    container_name: deckcraft
+    image: ghcr.io/daemonless/deckcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8089:80"
     restart: always
