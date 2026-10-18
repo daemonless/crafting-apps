@@ -1,4 +1,4 @@
-# Compose for cit testing: all ten apps, defaults only
+# Compose for cit testing: all thirteen apps, defaults only
 name: crafting-apps-test
 
 services:
@@ -32,3 +32,12 @@ services:
   deckcraft:
     image: ghcr.io/daemonless/deckcraft:latest
     ports: ["8089:80"]
+  figcraft:
+    image: ghcr.io/daemonless/figcraft:latest
+    ports: ["8090:80"]
+  soundcraft:
+    image: ghcr.io/daemonless/soundcraft:latest
+    ports: ["8091:80"]
+  cadcraft:
+    image: ghcr.io/daemonless/cadcraft:latest
+    ports: ["8092:80"]
