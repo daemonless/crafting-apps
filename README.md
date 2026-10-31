@@ -8,7 +8,7 @@ Source: dbuild templates
 [![Build Status](https://img.shields.io/github/actions/workflow/status/daemonless/crafting-apps/build.yaml?style=flat-square&label=Build&color=green)](https://github.com/daemonless/crafting-apps/actions)
 [![Last Commit](https://img.shields.io/github/last-commit/daemonless/crafting-apps?style=flat-square&label=Last+Commit&color=blue)](https://github.com/daemonless/crafting-apps/commits)
 
-ArtCraft's thirteen open-source, clean-room creative and office apps (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft, WordCraft, GridCraft, DeckCraft, FigCraft, SoundCraft, CADCraft) as WebAssembly web apps. Pick the ones you want.
+ArtCraft's fourteen open-source, clean-room creative and office apps (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft, WordCraft, GridCraft, DeckCraft, FigCraft, SoundCraft, CADCraft, SolidCraft) as WebAssembly web apps. Pick the ones you want.
 
 | | |
 |---|---|
@@ -34,6 +34,7 @@ ArtCraft's thirteen open-source, clean-room creative and office apps (PhotoCraft
 | **figcraft** | `ghcr.io/daemonless/figcraft:latest` | Interface design (Figma) | [docs](https://github.com/daemonless/figcraft) |
 | **soundcraft** | `ghcr.io/daemonless/soundcraft:latest` | Audio recording and mixing (Pro Tools) | [docs](https://github.com/daemonless/soundcraft) |
 | **cadcraft** | `ghcr.io/daemonless/cadcraft:latest` | CAD and drafting (AutoCAD) | [docs](https://github.com/daemonless/cadcraft) |
+| **solidcraft** | `ghcr.io/daemonless/solidcraft:latest` | Parametric 3D CAD (SolidWorks) | [docs](https://github.com/daemonless/solidcraft) |
 
 ## Prerequisites
 Before deploying, ensure your host environment is ready. See the [Quick Start Guide](https://daemonless.io/guides/quick-start) for host setup instructions.
@@ -68,6 +69,8 @@ Before deploying, ensure your host environment is ready. See the [Quick Start Gu
 
 **CADCraft.** Computer-aided design and drafting (AutoCAD).
 
+**SolidCraft.** Parametric 3D CAD (SolidWorks).
+
 These files run every part. To leave one out, delete its service from `compose.yaml`.
 
 **1.** Save as `.env` and fill in what is empty:
@@ -90,7 +93,7 @@ TZ=Etc/UTC
 #
 # Crafting Apps for FreeBSD (Daemonless)
 #
-# ArtCraft's thirteen open-source creative and office apps, each a static WebAssembly site
+# ArtCraft's fourteen open-source creative and office apps, each a static WebAssembly site
 # served by nginx. Pick the ones you want; nothing is shared between them.
 #
 # Usage:
@@ -242,6 +245,17 @@ services:
       TZ: ${TZ:-UTC}
     ports:
       - "8092:80"
+    restart: always
+
+  solidcraft:
+    container_name: solidcraft
+    image: ghcr.io/daemonless/solidcraft:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8093:80"
     restart: always
 ```
 
@@ -422,6 +436,18 @@ services:
     - container: boot args:--pull=newer
     - expose: 8092:80 proto:tcp
     - from: ghcr.io/daemonless/cadcraft:latest
+    oci:
+      user: root
+      environment:
+      - PUID: !ENV '${PUID}'
+      - PGID: !ENV '${PGID}'
+      - TZ: !ENV '${TZ}'
+  solidcraft:
+    name: solidcraft
+    options:
+    - container: boot args:--pull=newer
+    - expose: 8093:80 proto:tcp
+    - from: ghcr.io/daemonless/solidcraft:latest
     oci:
       user: root
       environment:
