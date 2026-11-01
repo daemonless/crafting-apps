@@ -1,7 +1,7 @@
 #
 # Crafting Apps for FreeBSD (Daemonless)
 #
-# ArtCraft's fourteen open-source creative and office apps, each a static WebAssembly site
+# ArtCraft's fifteen open-source creative and office apps, each a static WebAssembly site
 # served by nginx. Pick the ones you want; nothing is shared between them.
 #
 # Usage:
@@ -15,7 +15,7 @@ x-daemonless:
   title: Crafting Apps
   icon: ':material-palette:'
   category: Photos & Media
-  description: ArtCraft's fourteen open-source, clean-room creative and office apps (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft, WordCraft, GridCraft, DeckCraft, FigCraft, SoundCraft, CADCraft, SolidCraft) as WebAssembly web apps. Pick the ones you want.
+  description: ArtCraft's fifteen open-source, clean-room creative and office apps (PhotoCraft, VectorCraft, FilmCraft, LightCraft, PdfCraft, EffectCraft, DesignCraft, WordCraft, GridCraft, DeckCraft, FigCraft, SoundCraft, CADCraft, SolidCraft, Craft Anything) as WebAssembly web apps. Pick the ones you want.
   upstream_url: https://github.com/storytold
   web_url: https://getartcraft.com/apps
   type: stack
@@ -200,9 +200,21 @@ x-daemonless:
               - PUID: "!ENV '${PUID}'"
               - PGID: "!ENV '${PGID}'"
               - TZ: "!ENV '${TZ}'"
+        craft-anything:
+          name: craft-anything
+          options:
+            - container: 'boot args:--pull=newer'
+            - expose: '8094:80 proto:tcp'
+            - from: ghcr.io/daemonless/craft-anything:latest
+          oci:
+            user: root
+            environment:
+              - PUID: "!ENV '${PUID}'"
+              - PGID: "!ENV '${PGID}'"
+              - TZ: "!ENV '${TZ}'"
 
   # Each app is its own choice. The default is the compose as it stands: all
-  # fourteen. Leaving one out drops its service; nothing else changes.
+  # fifteen. Leaving one out drops its service; nothing else changes.
   choices:
     photocraft:
       label: PhotoCraft
@@ -302,6 +314,13 @@ x-daemonless:
       options:
         "on": { label: "Included" }
         "off": { label: "Left out", drop: [solidcraft] }
+    craft-anything:
+      label: Craft Anything
+      doc: Software understanding and creation engine.
+      default: "on"
+      options:
+        "on": { label: "Included" }
+        "off": { label: "Left out", drop: [craft-anything] }
 
   docs:
     services:
@@ -319,6 +338,7 @@ x-daemonless:
       soundcraft: "Audio recording and mixing (Pro Tools)"
       cadcraft: "CAD and drafting (AutoCAD)"
       solidcraft: "Parametric 3D CAD (SolidWorks)"
+      craft-anything: "Software understanding and creation engine"
     env:
       PUID: "User ID for the nginx worker processes"
       PGID: "Group ID for the nginx worker processes"
@@ -338,6 +358,7 @@ x-daemonless:
       8091: SoundCraft
       8092: CADCraft
       8093: SolidCraft
+      8094: Craft Anything
 
   readme:
     setup: |-
@@ -502,4 +523,15 @@ services:
       TZ: ${TZ:-UTC}
     ports:
       - "8093:80"
+    restart: always
+
+  craft-anything:
+    container_name: craft-anything
+    image: ghcr.io/daemonless/craft-anything:latest
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    ports:
+      - "8094:80"
     restart: always
