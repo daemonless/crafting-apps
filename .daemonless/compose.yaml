@@ -1,4 +1,4 @@
-# Compose for cit testing: all fifteen apps, defaults only
+# Compose for cit testing: all sixteen apps, defaults only
 name: crafting-apps-test
 
 services:
@@ -41,9 +41,12 @@ services:
   cadcraft:
     image: ghcr.io/daemonless/cadcraft:latest
     ports: ["8092:80"]
-  solidcraft:
-    image: ghcr.io/daemonless/solidcraft:latest
-    ports: ["8093:80"]
   craft-anything:
     image: ghcr.io/daemonless/craft-anything:latest
     ports: ["8094:80"]
+  texturecraft:
+    image: ghcr.io/daemonless/texturecraft:latest
+    ports: ["8095:80"]
+  materialcraft:
+    image: ghcr.io/daemonless/materialcraft:latest
+    ports: ["8096:80"]
